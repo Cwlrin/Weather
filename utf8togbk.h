@@ -3,6 +3,6 @@
 
 #include "string.h"
 
-int SwitchToGbk(const unsigned char* pszBufIn, int nBufInLen, unsigned char* pszBufOut, int* pnBufOutLen);
+int SwitchToGbk(const unsigned char *pszBufIn, int nBufInLen, unsigned char *pszBufOut, int *pnBufOutLen);
 
 #endif

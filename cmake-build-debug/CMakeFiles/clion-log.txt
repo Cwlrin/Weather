@@ -1,0 +1,14 @@
+"D:\Program Files\JetBrains\CLion 2020.3.1\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" C:\Users\20304\Documents\Weather
+-- The C compiler identification is GNU 3.4.5
+-- Check for working C compiler: C:/MinGW/bin/gcc.exe
+-- Check for working C compiler: C:/MinGW/bin/gcc.exe - works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Users/20304/Documents/Weather/cmake-build-debug
+
+Problems were encountered while collecting compiler information:
+	cc1.exe: error: unrecognized command line option "-fpch-preprocess"

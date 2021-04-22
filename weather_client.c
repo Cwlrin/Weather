@@ -1,8 +1,8 @@
 /*******************************************************************************************************
-** Ãû³Æ£ºÌìÆøHTTP¿Í»§¶Ë
-** ×÷Õß£ºÕıÄî¾ı
-** ×÷ÕßÎ¢ĞÅ¹«ÖÚºÅ£ºÇ¶ÈëÊ½´óÔÓ»â
-** ËµÃ÷£ºÒ»¶¨ÒªĞŞ¸ÄKEYµÄÖµÎª×Ô¼ºµÄ£¬·ñÔò²»ÄÜ»ñÈ¡µÃµ½ÌìÆøÊı¾İ£¡
+** åç§°ï¼šå¤©æ°”HTTPå®¢æˆ·ç«¯
+** ä½œè€…ï¼šæ­£å¿µå›
+** ä½œè€…å¾®ä¿¡å…¬ä¼—å·ï¼šåµŒå…¥å¼å¤§æ‚çƒ©
+** è¯´æ˜ï¼šä¸€å®šè¦ä¿®æ”¹KEYçš„å€¼ä¸ºè‡ªå·±çš„ï¼Œå¦åˆ™ä¸èƒ½è·å–å¾—åˆ°å¤©æ°”æ•°æ®ï¼
 ********************************************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,455 +11,455 @@
 #include "cJSON.h"
 #include "utf8togbk.h"
 
-/* µ÷ÊÔ¿ª¹Ø */
-#define  DEBUG   0		// 1£ºµ÷ÊÔ°æ±¾£¨´ò¿ªÏà¹Øprintfµ÷ÊÔÓï¾ä£©   0£º·¢²¼°æ±¾
+/* è°ƒè¯•å¼€å…³ */
+#define  DEBUG   0		// 1ï¼šè°ƒè¯•ç‰ˆæœ¬ï¼ˆæ‰“å¼€ç›¸å…³printfè°ƒè¯•è¯­å¥ï¼‰   0ï¼šå‘å¸ƒç‰ˆæœ¬
 
-/* ĞÄÖªÌìÆø£¨www.seniverse.com£©IP¼°¶Ë¿Ú */
+/* å¿ƒçŸ¥å¤©æ°”ï¼ˆwww.seniverse.comï¼‰IPåŠç«¯å£ */
 #define  WEATHER_IP_ADDR   "116.62.81.138"
 #define  WEATHER_PORT	   80
 
-/* ÃØÔ¿£¬×¢Òâ£¡£¡Èç¹ûÒªÓÃÕâÒ»·İ´úÂë£¬Õâ¸öÒ»¶¨Òª¸ÄÎª×Ô¼ºµÄ£¬ÒòÎªÕâ¸öÎÒÒÑ¾­¹ÊÒâ¸Ä´íÁË£¬·ÀÖ¹ÓĞÈËÓëÎÒ¹«ÓÃÒ»¸öKEY */
-#define  KEY    "2owqvhhd2dd9o9f8"		// ÕâÊÇÔÚĞÄÖªÌìÆø×¢²áºó£¬Ã¿¸öÓÃ»§×Ô¼ºµÄÒ»¸ökey
+/* ç§˜é’¥ï¼Œæ³¨æ„ï¼ï¼å¦‚æœè¦ç”¨è¿™ä¸€ä»½ä»£ç ï¼Œè¿™ä¸ªä¸€å®šè¦æ”¹ä¸ºè‡ªå·±çš„ï¼Œå› ä¸ºè¿™ä¸ªæˆ‘å·²ç»æ•…æ„æ”¹é”™äº†ï¼Œé˜²æ­¢æœ‰äººä¸æˆ‘å…¬ç”¨ä¸€ä¸ªKEY */
+#define  KEY    "2owqvhhd2dd9o9f8"		// è¿™æ˜¯åœ¨å¿ƒçŸ¥å¤©æ°”æ³¨å†Œåï¼Œæ¯ä¸ªç”¨æˆ·è‡ªå·±çš„ä¸€ä¸ªkey
 
-/* GETÇëÇó°ü */
+/* GETè¯·æ±‚åŒ… */
 #define  GET_REQUEST_PACKAGE     \
          "GET https://api.seniverse.com/v3/weather/%s.json?key=%s&location=%s&language=zh-Hans&unit=c\r\n\r\n"
-	
-/* JSONÊı¾İ°ü */	
+
+/* JSONæ•°æ®åŒ… */
 #define  NOW_JSON     "now"
 #define  DAILY_JSON   "daily"
-//....»¹ÓÃ¸ü¶àÆäËûµÄÌìÆøÊı¾İ°ü¿É²éÔÄĞÄÖªÌìÆø
+//....è¿˜ç”¨æ›´å¤šå…¶ä»–çš„å¤©æ°”æ•°æ®åŒ…å¯æŸ¥é˜…å¿ƒçŸ¥å¤©æ°”
 
-/* ÌìÆøÊı¾İ½á¹¹Ìå */
+/* å¤©æ°”æ•°æ®ç»“æ„ä½“ */
 typedef struct
 {
-	/* Êµ¿öÌìÆøÊı¾İ */
-	char id[32];				//id
-	char name[32];				//µØÃû
-	char country[32];			//¹ú¼Ò
-	char path[32];				//ÍêÕûµØÃûÂ·¾¶
-	char timezone[32];			//Ê±Çø
-	char timezone_offset[32];   //Ê±²î
-	char text[32];				//ÌìÆøÔ¤±¨ÎÄ×Ö
-	char code[32];				//ÌìÆøÔ¤±¨´úÂë
-	char temperature[32];   	//ÆøÎÂ
-	char last_update[32];		//×îºóÒ»´Î¸üĞÂµÄÊ±¼ä
-	
-	
-	/* ½ñÌì¡¢Ã÷Ìì¡¢ºóÌìÌìÆøÊı¾İ */
-	char date[3][32];			//ÈÕÆÚ
-	char text_day[3][64];	    //°×ÌìÌìÆøÏÖÏóÎÄ×Ö
-	char code_day[3][32];		//°×ÌìÌìÆøÏÖÏó´úÂë
-	char code_night[3][64]; 	//Íí¼äÌìÆøÏÖÏó´úÂë
-	char high[3][32];			//×î¸ßÎÂ
-	char low[3][32];			//×îµÍÎÂ
-	char wind_direction[3][64]; //·çÏò
-	char wind_speed[3][32];  	//·çËÙ£¬µ¥Î»km/h£¨µ±unit=cÊ±£©
-	char wind_scale[3][32];  	//·çÁ¦µÈ¼¶
+    /* å®å†µå¤©æ°”æ•°æ® */
+    char id[32];				//id
+    char name[32];				//åœ°å
+    char country[32];			//å›½å®¶
+    char path[32];				//å®Œæ•´åœ°åè·¯å¾„
+    char timezone[32];			//æ—¶åŒº
+    char timezone_offset[32];   //æ—¶å·®
+    char text[32];				//å¤©æ°”é¢„æŠ¥æ–‡å­—
+    char code[32];				//å¤©æ°”é¢„æŠ¥ä»£ç 
+    char temperature[32];   	//æ°”æ¸©
+    char last_update[32];		//æœ€åä¸€æ¬¡æ›´æ–°çš„æ—¶é—´
+
+
+    /* ä»Šå¤©ã€æ˜å¤©ã€åå¤©å¤©æ°”æ•°æ® */
+    char date[3][32];			//æ—¥æœŸ
+    char text_day[3][64];	    //ç™½å¤©å¤©æ°”ç°è±¡æ–‡å­—
+    char code_day[3][32];		//ç™½å¤©å¤©æ°”ç°è±¡ä»£ç 
+    char code_night[3][64]; 	//æ™šé—´å¤©æ°”ç°è±¡ä»£ç 
+    char high[3][32];			//æœ€é«˜æ¸©
+    char low[3][32];			//æœ€ä½æ¸©
+    char wind_direction[3][64]; //é£å‘
+    char wind_speed[3][32];  	//é£é€Ÿï¼Œå•ä½km/hï¼ˆå½“unit=cæ—¶ï¼‰
+    char wind_scale[3][32];  	//é£åŠ›ç­‰çº§
 }Weather;
 
-/* cmd´°¿ÚÉèÖÃ */
+/* cmdçª—å£è®¾ç½® */
 struct cmd_windows_config
 {
-	int width;
-	int high;
-	int color;
+    int width;
+    int high;
+    int color;
 };
 
-/* cmd´°¿ÚÄ¬ÈÏÅäÖÃ */
+/* cmdçª—å£é»˜è®¤é…ç½® */
 struct cmd_windows_config cmd_default_config =
-{
-	60,
-	40,
-	0xf0
-};
+        {
+                60,
+                40,
+                0xf0
+        };
 
-// º¯ÊıÉùÃ÷
+// å‡½æ•°å£°æ˜
 static void GetWeather(char *weather_json, char *location, Weather *result);
 static int cJSON_NowWeatherParse(char *JSON, Weather *result);
 static int cJSON_DailyWeatherParse(char *JSON, Weather *result);
 static void DisplayWeather(Weather *weather_data);
 static void cmd_window_set(struct cmd_windows_config *config);
 static void printf_topic(void);
-	
+
 /*******************************************************************************************************
-** º¯Êı: main£¬Ö÷º¯Êı
+** å‡½æ•°: mainï¼Œä¸»å‡½æ•°
 **------------------------------------------------------------------------------------------------------
-** ²ÎÊı: void
-** ·µ»Ø: void
+** å‚æ•°: void
+** è¿”å›: void
 ********************************************************************************************************/
 int main(void)
 {
-	Weather weather_data = {0};
-	char location[32] = {0};
-	
-	cmd_window_set(&cmd_default_config); // ÅäÖÃcmd´°¿Ú
-	printf_topic();
-	
-	while ((1 == scanf("%s", location))) // ¶ÁÈëµØÃûÆ´Òô
-	{
-		system("cls");	// ÇåÆÁ
-		memset(&weather_data, 0, sizeof(weather_data));  // weather_dataÇåÁã 
-		GetWeather(NOW_JSON, location, &weather_data);   // GET ²¢½âÎöÊµ¿öÌìÆøÊı¾İ
-		GetWeather(DAILY_JSON, location, &weather_data); // GET ²¢½âÎö½üÈıÌìÌìÆøÊı¾İ
-		DisplayWeather(&weather_data);					 // ÏÔÊ¾ÌìÆø½á¹û
-		printf("\nÇëÊäÈëÒª²éÑ¯ÌìÆøµÄ³ÇÊĞÃû³ÆµÄÆ´Òô£¨Èç£ºbeijing£©£º");
-	}
-	
-	return 0;
+    Weather weather_data = {0};
+    char location[32] = {0};
+
+    cmd_window_set(&cmd_default_config); // é…ç½®cmdçª—å£
+    printf_topic();
+
+    while ((1 == scanf("%s", location))) // è¯»å…¥åœ°åæ‹¼éŸ³
+    {
+        system("cls");	// æ¸…å±
+        memset(&weather_data, 0, sizeof(weather_data));  // weather_dataæ¸…é›¶
+        GetWeather(NOW_JSON, location, &weather_data);   // GET å¹¶è§£æå®å†µå¤©æ°”æ•°æ®
+        GetWeather(DAILY_JSON, location, &weather_data); // GET å¹¶è§£æè¿‘ä¸‰å¤©å¤©æ°”æ•°æ®
+        DisplayWeather(&weather_data);					 // æ˜¾ç¤ºå¤©æ°”ç»“æœ
+        printf("\nè¯·è¾“å…¥è¦æŸ¥è¯¢å¤©æ°”çš„åŸå¸‚åç§°çš„æ‹¼éŸ³ï¼ˆå¦‚ï¼šbeijingï¼‰ï¼š");
+    }
+
+    return 0;
 }
 
 /*******************************************************************************************************
-** º¯Êı: GetWeather£¬»ñÈ¡ÌìÆøÊı¾İ²¢½âÎö
+** å‡½æ•°: GetWeatherï¼Œè·å–å¤©æ°”æ•°æ®å¹¶è§£æ
 **------------------------------------------------------------------------------------------------------
-** ²ÎÊı: weather_json£ºĞèÒª½âÎöµÄjson°ü   location£ºµØÃû   result£ºÊı¾İ½âÎöµÄ½á¹û
-** ·µ»Ø: void
+** å‚æ•°: weather_jsonï¼šéœ€è¦è§£æçš„jsonåŒ…   locationï¼šåœ°å   resultï¼šæ•°æ®è§£æçš„ç»“æœ
+** è¿”å›: void
 ********************************************************************************************************/
 static void GetWeather(char *weather_json, char *location, Weather *result)
 {
-	SOCKET ClientSock;
-	WSADATA wd;
-	char GetRequestBuf[256] = {0};
-	char WeatherRecvBuf[2*1024] = {0};
-	char GbkRecvBuf[2*1024] = {0};
-	int  gbk_recv_len = 0;
-	int  connect_status = 0;
-	
-	/* ³õÊ¼»¯²Ù×÷sockĞèÒªµÄDLL */
-	WSAStartup(MAKEWORD(2,2),&wd);  
-	
-	/* ÉèÖÃÒª·ÃÎÊµÄ·şÎñÆ÷µÄĞÅÏ¢ */
+    SOCKET ClientSock;
+    WSADATA wd;
+    char GetRequestBuf[256] = {0};
+    char WeatherRecvBuf[2*1024] = {0};
+    char GbkRecvBuf[2*1024] = {0};
+    int  gbk_recv_len = 0;
+    int  connect_status = 0;
+
+    /* åˆå§‹åŒ–æ“ä½œsockéœ€è¦çš„DLL */
+    WSAStartup(MAKEWORD(2,2),&wd);
+
+    /* è®¾ç½®è¦è®¿é—®çš„æœåŠ¡å™¨çš„ä¿¡æ¯ */
     SOCKADDR_IN  ServerSockAddr;
-    memset(&ServerSockAddr, 0, sizeof(ServerSockAddr));  		  // Ã¿¸ö×Ö½Ú¶¼ÓÃ0Ìî³ä
+    memset(&ServerSockAddr, 0, sizeof(ServerSockAddr));  		  // æ¯ä¸ªå­—èŠ‚éƒ½ç”¨0å¡«å……
     ServerSockAddr.sin_family = PF_INET;						  // IPv4
-    ServerSockAddr.sin_addr.s_addr = inet_addr(WEATHER_IP_ADDR);  // ĞÄÖªÌìÆø·şÎñÆ÷IP
-    ServerSockAddr.sin_port = htons(WEATHER_PORT);   			  // ¶Ë¿Ú
-	
-	/* ´´½¨¿Í»§¶Ësocket */
-	if (-1 == (ClientSock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)))
-	{
-		printf("socket error!\n");
-		exit(1);
-	}
-	
-	/* Á¬½Ó·şÎñ¶Ë */
-	if (-1 == (connect_status = connect(ClientSock, (SOCKADDR*)&ServerSockAddr, sizeof(SOCKADDR))))
-	{
-		printf("connect error!\n");
-		exit(1);
-	}
-	
-	/* ×éºÏGETÇëÇó°ü */
-	sprintf(GetRequestBuf, GET_REQUEST_PACKAGE, weather_json, KEY, location);
-	
-	/* ·¢ËÍÊı¾İµ½·şÎñ¶Ë */
-	send(ClientSock, GetRequestBuf, strlen(GetRequestBuf), 0);
-		
-	/* ½ÓÊÜ·şÎñ¶ËµÄ·µ»ØÊı¾İ */
-	recv(ClientSock, WeatherRecvBuf, 2*1024, 0);
-	
-	/* utf-8×ªÎªgbk */
-	SwitchToGbk((const unsigned char*)WeatherRecvBuf, strlen((const char*)WeatherRecvBuf), (unsigned char*)GbkRecvBuf, &gbk_recv_len);	
+    ServerSockAddr.sin_addr.s_addr = inet_addr(WEATHER_IP_ADDR);  // å¿ƒçŸ¥å¤©æ°”æœåŠ¡å™¨IP
+    ServerSockAddr.sin_port = htons(WEATHER_PORT);   			  // ç«¯å£
+
+    /* åˆ›å»ºå®¢æˆ·ç«¯socket */
+    if (-1 == (ClientSock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)))
+    {
+        printf("socket error!\n");
+        exit(1);
+    }
+
+    /* è¿æ¥æœåŠ¡ç«¯ */
+    if (-1 == (connect_status = connect(ClientSock, (SOCKADDR*)&ServerSockAddr, sizeof(SOCKADDR))))
+    {
+        printf("connect error!\n");
+        exit(1);
+    }
+
+    /* ç»„åˆGETè¯·æ±‚åŒ… */
+    sprintf(GetRequestBuf, GET_REQUEST_PACKAGE, weather_json, KEY, location);
+
+    /* å‘é€æ•°æ®åˆ°æœåŠ¡ç«¯ */
+    send(ClientSock, GetRequestBuf, strlen(GetRequestBuf), 0);
+
+    /* æ¥å—æœåŠ¡ç«¯çš„è¿”å›æ•°æ® */
+    recv(ClientSock, WeatherRecvBuf, 2*1024, 0);
+
+    /* utf-8è½¬ä¸ºgbk */
+    SwitchToGbk((const unsigned char*)WeatherRecvBuf, strlen((const char*)WeatherRecvBuf), (unsigned char*)GbkRecvBuf, &gbk_recv_len);
 #if DEBUG
-	printf("·şÎñ¶Ë·µ»ØµÄÊı¾İÎª£º%s\n", GbkRecvBuf);
+    printf("æœåŠ¡ç«¯è¿”å›çš„æ•°æ®ä¸ºï¼š%s\n", GbkRecvBuf);
 #endif
-	
-	/* ½âÎöÌìÆøÊı¾İ²¢±£´æµ½½á¹¹Ìå±äÁ¿weather_dataÖĞ */
-	if (0 == strcmp(weather_json, NOW_JSON))		// ÌìÆøÊµ¿ö
-	{
-		cJSON_NowWeatherParse(GbkRecvBuf, result);	
-	}
-	else if(0 == strcmp(weather_json, DAILY_JSON)) // Î´À´ÈıÌìÌìÆø
-	{
-		cJSON_DailyWeatherParse(GbkRecvBuf, result);	
-	}
-	
-	/* Çå¿Õ»º³åÇø */
-	memset(GetRequestBuf, 0, 256);   
-	memset(WeatherRecvBuf, 0, 2*1024);   
-	memset(GbkRecvBuf, 0, 2*1024); 
-	
-	/* ¹Ø±ÕÌ×½Ó×Ö */
-	closesocket(ClientSock);  
-	
-	/* ÖÕÖ¹Ê¹ÓÃ DLL */
-	WSACleanup();  
+
+    /* è§£æå¤©æ°”æ•°æ®å¹¶ä¿å­˜åˆ°ç»“æ„ä½“å˜é‡weather_dataä¸­ */
+    if (0 == strcmp(weather_json, NOW_JSON))		// å¤©æ°”å®å†µ
+    {
+        cJSON_NowWeatherParse(GbkRecvBuf, result);
+    }
+    else if(0 == strcmp(weather_json, DAILY_JSON)) // æœªæ¥ä¸‰å¤©å¤©æ°”
+    {
+        cJSON_DailyWeatherParse(GbkRecvBuf, result);
+    }
+
+    /* æ¸…ç©ºç¼“å†²åŒº */
+    memset(GetRequestBuf, 0, 256);
+    memset(WeatherRecvBuf, 0, 2*1024);
+    memset(GbkRecvBuf, 0, 2*1024);
+
+    /* å…³é—­å¥—æ¥å­— */
+    closesocket(ClientSock);
+
+    /* ç»ˆæ­¢ä½¿ç”¨ DLL */
+    WSACleanup();
 }
 
 /*******************************************************************************************************
-** º¯Êı: cJSON_NowWeatherParse£¬½âÎöÌìÆøÊµ¿öÊı¾İ
+** å‡½æ•°: cJSON_NowWeatherParseï¼Œè§£æå¤©æ°”å®å†µæ•°æ®
 **------------------------------------------------------------------------------------------------------
-** ²ÎÊı: JSON£ºÌìÆøÊı¾İ°ü   result£ºÊı¾İ½âÎöµÄ½á¹û
-** ·µ»Ø: void
+** å‚æ•°: JSONï¼šå¤©æ°”æ•°æ®åŒ…   resultï¼šæ•°æ®è§£æçš„ç»“æœ
+** è¿”å›: void
 ********************************************************************************************************/
 static int cJSON_NowWeatherParse(char *JSON, Weather *result)
 {
-	cJSON *json,*arrayItem,*object,*subobject,*item;
-	
-	json = cJSON_Parse(JSON); //½âÎöJSONÊı¾İ°ü
-	if(json == NULL)		  //¼ì²âJSONÊı¾İ°üÊÇ·ñ´æÔÚÓï·¨ÉÏµÄ´íÎó£¬·µ»ØNULL±íÊ¾Êı¾İ°üÎŞĞ§
-	{
-		printf("Error before: [%s]\n",cJSON_GetErrorPtr()); //´òÓ¡Êı¾İ°üÓï·¨´íÎóµÄÎ»ÖÃ
-		return 1;
-	}
-	else
-	{
-		if((arrayItem = cJSON_GetObjectItem(json,"results")) != NULL); //Æ¥Åä×Ö·û´®"results",»ñÈ¡Êı×éÄÚÈİ
-		{
-			int size = cJSON_GetArraySize(arrayItem);     //»ñÈ¡Êı×éÖĞ¶ÔÏó¸öÊı
+    cJSON *json,*arrayItem,*object,*subobject,*item;
+
+    json = cJSON_Parse(JSON); //è§£æJSONæ•°æ®åŒ…
+    if(json == NULL)		  //æ£€æµ‹JSONæ•°æ®åŒ…æ˜¯å¦å­˜åœ¨è¯­æ³•ä¸Šçš„é”™è¯¯ï¼Œè¿”å›NULLè¡¨ç¤ºæ•°æ®åŒ…æ— æ•ˆ
+    {
+        printf("Error before: [%s]\n",cJSON_GetErrorPtr()); //æ‰“å°æ•°æ®åŒ…è¯­æ³•é”™è¯¯çš„ä½ç½®
+        return 1;
+    }
+    else
+    {
+        if((arrayItem = cJSON_GetObjectItem(json,"results")) != NULL); //åŒ¹é…å­—ç¬¦ä¸²"results",è·å–æ•°ç»„å†…å®¹
+        {
+            int size = cJSON_GetArraySize(arrayItem);     //è·å–æ•°ç»„ä¸­å¯¹è±¡ä¸ªæ•°
 #if DEBUG
-			printf("cJSON_GetArraySize: size=%d\n",size); 
+            printf("cJSON_GetArraySize: size=%d\n",size);
 #endif
-			if((object = cJSON_GetArrayItem(arrayItem,0)) != NULL)//»ñÈ¡¸¸¶ÔÏóÄÚÈİ
-			{
-				/* Æ¥Åä×Ó¶ÔÏó1£º³ÇÊĞµØÇøÏà¹Ø */
-				if((subobject = cJSON_GetObjectItem(object,"location")) != NULL)
-				{
-					// Æ¥Åäid
-					if((item = cJSON_GetObjectItem(subobject,"id")) != NULL)   
-					{
-						memcpy(result->id, item->valuestring,strlen(item->valuestring)); 		// ±£´æÊı¾İ¹©Íâ²¿µ÷ÓÃ
-					}
-					// Æ¥Åä³ÇÊĞÃû
-					if((item = cJSON_GetObjectItem(subobject,"name")) != NULL) 
-					{
-						memcpy(result->name, item->valuestring,strlen(item->valuestring)); 		// ±£´æÊı¾İ¹©Íâ²¿µ÷ÓÃ
-					}
-					// Æ¥Åä³ÇÊĞËùÔÚµÄ¹ú¼Ò
-					if((item = cJSON_GetObjectItem(subobject,"country")) != NULL)
-					{
-						memcpy(result->country, item->valuestring,strlen(item->valuestring)); 	// ±£´æÊı¾İ¹©Íâ²¿µ÷ÓÃ
-					}
-					// Æ¥ÅäÍêÕûµØÃûÂ·¾¶
-					if((item = cJSON_GetObjectItem(subobject,"path")) != NULL)  
-					{
-						memcpy(result->path, item->valuestring,strlen(item->valuestring)); 		// ±£´æÊı¾İ¹©Íâ²¿µ÷ÓÃ	
-					}
-					// Æ¥ÅäÊ±Çø
-					if((item = cJSON_GetObjectItem(subobject,"timezone")) != NULL)
-					{
-						memcpy(result->timezone, item->valuestring,strlen(item->valuestring)); 	// ±£´æÊı¾İ¹©Íâ²¿µ÷ÓÃ	
-					}
-					// Æ¥ÅäÊ±²î
-					if((item = cJSON_GetObjectItem(subobject,"timezone_offset")) != NULL)
-					{
-						memcpy(result->timezone_offset, item->valuestring,strlen(item->valuestring)); 	// ±£´æÊı¾İ¹©Íâ²¿µ÷ÓÃ
-					}
-				}
-				/* Æ¥Åä×Ó¶ÔÏó2£º½ñÌìµÄÌìÆøÇé¿ö */
-				if((subobject = cJSON_GetObjectItem(object,"now")) != NULL)
-				{
-					// Æ¥ÅäÌìÆøÏÖÏóÎÄ×Ö
-					if((item = cJSON_GetObjectItem(subobject,"text")) != NULL)
-					{
-						memcpy(result->text, item->valuestring,strlen(item->valuestring));  // ±£´æÊı¾İ¹©Íâ²¿µ÷ÓÃ
-					}
-					// Æ¥ÅäÌìÆøÏÖÏó´úÂë
-					if((item = cJSON_GetObjectItem(subobject,"code")) != NULL)
-					{
-						memcpy(result->code, item->valuestring,strlen(item->valuestring));  // ±£´æÊı¾İ¹©Íâ²¿µ÷ÓÃ
-					}
-					// Æ¥ÅäÆøÎÂ
-					if((item = cJSON_GetObjectItem(subobject,"temperature")) != NULL) 
-					{
-						memcpy(result->temperature, item->valuestring,strlen(item->valuestring));   // ±£´æÊı¾İ¹©Íâ²¿µ÷ÓÃ
-					}	
-				}
-				/* Æ¥Åä×Ó¶ÔÏó3£ºÊı¾İ¸üĞÂÊ±¼ä£¨¸Ã³ÇÊĞµÄ±¾µØÊ±¼ä£© */
-				if((subobject = cJSON_GetObjectItem(object,"last_update")) != NULL)
-				{
-					memcpy(result->last_update, subobject->valuestring,strlen(subobject->valuestring));   // ±£´æÊı¾İ¹©Íâ²¿µ÷ÓÃ
-				}
-			} 
-		}
-	}
-	
-	cJSON_Delete(json); //ÊÍ·ÅcJSON_Parse()·ÖÅä³öÀ´µÄÄÚ´æ¿Õ¼ä
-	
-	return 0;
+            if((object = cJSON_GetArrayItem(arrayItem,0)) != NULL)//è·å–çˆ¶å¯¹è±¡å†…å®¹
+            {
+                /* åŒ¹é…å­å¯¹è±¡1ï¼šåŸå¸‚åœ°åŒºç›¸å…³ */
+                if((subobject = cJSON_GetObjectItem(object,"location")) != NULL)
+                {
+                    // åŒ¹é…id
+                    if((item = cJSON_GetObjectItem(subobject,"id")) != NULL)
+                    {
+                        memcpy(result->id, item->valuestring,strlen(item->valuestring)); 		// ä¿å­˜æ•°æ®ä¾›å¤–éƒ¨è°ƒç”¨
+                    }
+                    // åŒ¹é…åŸå¸‚å
+                    if((item = cJSON_GetObjectItem(subobject,"name")) != NULL)
+                    {
+                        memcpy(result->name, item->valuestring,strlen(item->valuestring)); 		// ä¿å­˜æ•°æ®ä¾›å¤–éƒ¨è°ƒç”¨
+                    }
+                    // åŒ¹é…åŸå¸‚æ‰€åœ¨çš„å›½å®¶
+                    if((item = cJSON_GetObjectItem(subobject,"country")) != NULL)
+                    {
+                        memcpy(result->country, item->valuestring,strlen(item->valuestring)); 	// ä¿å­˜æ•°æ®ä¾›å¤–éƒ¨è°ƒç”¨
+                    }
+                    // åŒ¹é…å®Œæ•´åœ°åè·¯å¾„
+                    if((item = cJSON_GetObjectItem(subobject,"path")) != NULL)
+                    {
+                        memcpy(result->path, item->valuestring,strlen(item->valuestring)); 		// ä¿å­˜æ•°æ®ä¾›å¤–éƒ¨è°ƒç”¨
+                    }
+                    // åŒ¹é…æ—¶åŒº
+                    if((item = cJSON_GetObjectItem(subobject,"timezone")) != NULL)
+                    {
+                        memcpy(result->timezone, item->valuestring,strlen(item->valuestring)); 	// ä¿å­˜æ•°æ®ä¾›å¤–éƒ¨è°ƒç”¨
+                    }
+                    // åŒ¹é…æ—¶å·®
+                    if((item = cJSON_GetObjectItem(subobject,"timezone_offset")) != NULL)
+                    {
+                        memcpy(result->timezone_offset, item->valuestring,strlen(item->valuestring)); 	// ä¿å­˜æ•°æ®ä¾›å¤–éƒ¨è°ƒç”¨
+                    }
+                }
+                /* åŒ¹é…å­å¯¹è±¡2ï¼šä»Šå¤©çš„å¤©æ°”æƒ…å†µ */
+                if((subobject = cJSON_GetObjectItem(object,"now")) != NULL)
+                {
+                    // åŒ¹é…å¤©æ°”ç°è±¡æ–‡å­—
+                    if((item = cJSON_GetObjectItem(subobject,"text")) != NULL)
+                    {
+                        memcpy(result->text, item->valuestring,strlen(item->valuestring));  // ä¿å­˜æ•°æ®ä¾›å¤–éƒ¨è°ƒç”¨
+                    }
+                    // åŒ¹é…å¤©æ°”ç°è±¡ä»£ç 
+                    if((item = cJSON_GetObjectItem(subobject,"code")) != NULL)
+                    {
+                        memcpy(result->code, item->valuestring,strlen(item->valuestring));  // ä¿å­˜æ•°æ®ä¾›å¤–éƒ¨è°ƒç”¨
+                    }
+                    // åŒ¹é…æ°”æ¸©
+                    if((item = cJSON_GetObjectItem(subobject,"temperature")) != NULL)
+                    {
+                        memcpy(result->temperature, item->valuestring,strlen(item->valuestring));   // ä¿å­˜æ•°æ®ä¾›å¤–éƒ¨è°ƒç”¨
+                    }
+                }
+                /* åŒ¹é…å­å¯¹è±¡3ï¼šæ•°æ®æ›´æ–°æ—¶é—´ï¼ˆè¯¥åŸå¸‚çš„æœ¬åœ°æ—¶é—´ï¼‰ */
+                if((subobject = cJSON_GetObjectItem(object,"last_update")) != NULL)
+                {
+                    memcpy(result->last_update, subobject->valuestring,strlen(subobject->valuestring));   // ä¿å­˜æ•°æ®ä¾›å¤–éƒ¨è°ƒç”¨
+                }
+            }
+        }
+    }
+
+    cJSON_Delete(json); //é‡Šæ”¾cJSON_Parse()åˆ†é…å‡ºæ¥çš„å†…å­˜ç©ºé—´
+
+    return 0;
 }
 
 /*******************************************************************************************************
-** º¯Êı: cJSON_DailyWeatherParse£¬½âÎö½üÈıÌìÌìÆøÊı¾İ
+** å‡½æ•°: cJSON_DailyWeatherParseï¼Œè§£æè¿‘ä¸‰å¤©å¤©æ°”æ•°æ®
 **------------------------------------------------------------------------------------------------------
-** ²ÎÊı: JSON£ºÌìÆøÊı¾İ°ü   result£ºÊı¾İ½âÎöµÄ½á¹û
-** ·µ»Ø: void
+** å‚æ•°: JSONï¼šå¤©æ°”æ•°æ®åŒ…   resultï¼šæ•°æ®è§£æçš„ç»“æœ
+** è¿”å›: void
 ********************************************************************************************************/
 static int cJSON_DailyWeatherParse(char *JSON, Weather *result)
 {
-	cJSON *json,*arrayItem,*object,*subobject,*item,*sub_child_object,*child_Item;
-	
-	json = cJSON_Parse(JSON); //½âÎöJSONÊı¾İ°ü
-	if(json == NULL)		  //¼ì²âJSONÊı¾İ°üÊÇ·ñ´æÔÚÓï·¨ÉÏµÄ´íÎó£¬·µ»ØNULL±íÊ¾Êı¾İ°üÎŞĞ§
-	{
-		printf("Error before: [%s]\n",cJSON_GetErrorPtr()); //´òÓ¡Êı¾İ°üÓï·¨´íÎóµÄÎ»ÖÃ
-		return 1;
-	}
-	else
-	{
-		if((arrayItem = cJSON_GetObjectItem(json,"results")) != NULL); //Æ¥Åä×Ö·û´®"results",»ñÈ¡Êı×éÄÚÈİ
-		{
-			int size = cJSON_GetArraySize(arrayItem);     //»ñÈ¡Êı×éÖĞ¶ÔÏó¸öÊı
+    cJSON *json,*arrayItem,*object,*subobject,*item,*sub_child_object,*child_Item;
+
+    json = cJSON_Parse(JSON); //è§£æJSONæ•°æ®åŒ…
+    if(json == NULL)		  //æ£€æµ‹JSONæ•°æ®åŒ…æ˜¯å¦å­˜åœ¨è¯­æ³•ä¸Šçš„é”™è¯¯ï¼Œè¿”å›NULLè¡¨ç¤ºæ•°æ®åŒ…æ— æ•ˆ
+    {
+        printf("Error before: [%s]\n",cJSON_GetErrorPtr()); //æ‰“å°æ•°æ®åŒ…è¯­æ³•é”™è¯¯çš„ä½ç½®
+        return 1;
+    }
+    else
+    {
+        if((arrayItem = cJSON_GetObjectItem(json,"results")) != NULL); //åŒ¹é…å­—ç¬¦ä¸²"results",è·å–æ•°ç»„å†…å®¹
+        {
+            int size = cJSON_GetArraySize(arrayItem);     //è·å–æ•°ç»„ä¸­å¯¹è±¡ä¸ªæ•°
 #if DEBUG
-			printf("Get Array Size: size=%d\n",size); 
+            printf("Get Array Size: size=%d\n",size);
 #endif
-			if((object = cJSON_GetArrayItem(arrayItem,0)) != NULL)//»ñÈ¡¸¸¶ÔÏóÄÚÈİ
-			{
-				/* Æ¥Åä×Ó¶ÔÏó1------½á¹¹Ìålocation */
-				if((subobject = cJSON_GetObjectItem(object,"location")) != NULL)
-				{
-					if((item = cJSON_GetObjectItem(subobject,"name")) != NULL) //Æ¥Åä×Ó¶ÔÏó1³ÉÔ±"name"
-					{
-						memcpy(result->name, item->valuestring,strlen(item->valuestring)); 		// ±£´æÊı¾İ¹©Íâ²¿µ÷ÓÃ
-					}
-				}
-				/* Æ¥Åä×Ó¶ÔÏó2------Êı×édaily */
-				if((subobject = cJSON_GetObjectItem(object,"daily")) != NULL)
-				{
-					int sub_array_size = cJSON_GetArraySize(subobject);
+            if((object = cJSON_GetArrayItem(arrayItem,0)) != NULL)//è·å–çˆ¶å¯¹è±¡å†…å®¹
+            {
+                /* åŒ¹é…å­å¯¹è±¡1------ç»“æ„ä½“location */
+                if((subobject = cJSON_GetObjectItem(object,"location")) != NULL)
+                {
+                    if((item = cJSON_GetObjectItem(subobject,"name")) != NULL) //åŒ¹é…å­å¯¹è±¡1æˆå‘˜"name"
+                    {
+                        memcpy(result->name, item->valuestring,strlen(item->valuestring)); 		// ä¿å­˜æ•°æ®ä¾›å¤–éƒ¨è°ƒç”¨
+                    }
+                }
+                /* åŒ¹é…å­å¯¹è±¡2------æ•°ç»„daily */
+                if((subobject = cJSON_GetObjectItem(object,"daily")) != NULL)
+                {
+                    int sub_array_size = cJSON_GetArraySize(subobject);
 #if DEBUG
-					printf("Get Sub Array Size: sub_array_size=%d\n",sub_array_size);
+                    printf("Get Sub Array Size: sub_array_size=%d\n",sub_array_size);
 #endif
-					for(int i = 0; i < sub_array_size; i++)
-					{
-						if((sub_child_object = cJSON_GetArrayItem(subobject,i))!=NULL)
-						{
-							// Æ¥ÅäÈÕÆÚ
-							if((child_Item = cJSON_GetObjectItem(sub_child_object,"date")) != NULL)
-							{
-								memcpy(result->date[i], child_Item->valuestring,strlen(child_Item->valuestring)); 		// ±£´æÊı¾İ
-							}
-							// Æ¥Åä°×ÌìÌìÆøÏÖÏóÎÄ×Ö
-							if((child_Item = cJSON_GetObjectItem(sub_child_object,"text_day")) != NULL)
-							{
-								memcpy(result->text_day[i], child_Item->valuestring,strlen(child_Item->valuestring)); 	// ±£´æÊı¾İ
-							}
-							// Æ¥Åä°×ÌìÌìÆøÏÖÏó´úÂë
-							if((child_Item = cJSON_GetObjectItem(sub_child_object,"code_day")) != NULL)
-							{
-								memcpy(result->code_day[i], child_Item->valuestring,strlen(child_Item->valuestring)); 	// ±£´æÊı¾İ
-							}
-							// Æ¥ÅäÒ¹¼äÌìÆøÏÖÏó´úÂë
-							if((child_Item = cJSON_GetObjectItem(sub_child_object,"code_night")) != NULL)
-							{
-								memcpy(result->code_night[i], child_Item->valuestring,strlen(child_Item->valuestring)); // ±£´æÊı¾İ
-							}
-							// Æ¥Åä×î¸ßÎÂ¶È
-							if((child_Item = cJSON_GetObjectItem(sub_child_object,"high")) != NULL)
-							{
-								memcpy(result->high[i], child_Item->valuestring,strlen(child_Item->valuestring)); 		//±£´æÊı¾İ
-							}
-							// Æ¥Åä×îµÍÎÂ¶È
-							if((child_Item = cJSON_GetObjectItem(sub_child_object,"low")) != NULL)
-							{
-								memcpy(result->low[i], child_Item->valuestring,strlen(child_Item->valuestring)); 		// ±£´æÊı¾İ
-							}
-							// Æ¥Åä·çÏò
-							if((child_Item = cJSON_GetObjectItem(sub_child_object,"wind_direction")) != NULL)
-							{
-								memcpy(result->wind_direction[i],child_Item->valuestring,strlen(child_Item->valuestring)); //±£´æÊı¾İ
-							}
-							// Æ¥Åä·çËÙ£¬µ¥Î»km/h£¨µ±unit=cÊ±£©
-							if((child_Item = cJSON_GetObjectItem(sub_child_object,"wind_speed")) != NULL)
-							{
-								memcpy(result->wind_speed[i], child_Item->valuestring,strlen(child_Item->valuestring)); // ±£´æÊı¾İ
-							}
-							// Æ¥Åä·çÁ¦µÈ¼¶
-							if((child_Item = cJSON_GetObjectItem(sub_child_object,"wind_scale")) != NULL)
-							{
-								memcpy(result->wind_scale[i], child_Item->valuestring,strlen(child_Item->valuestring)); // ±£´æÊı¾İ
-							}
-						}
-					}
-				}
-				/* Æ¥Åä×Ó¶ÔÏó3------×îºóÒ»´Î¸üĞÂµÄÊ±¼ä */
-				if((subobject = cJSON_GetObjectItem(object,"last_update")) != NULL)
-				{
-					//printf("%s:%s\n",subobject->string,subobject->valuestring);
-				}
-			} 
-		}
-	}
-	
-	cJSON_Delete(json); //ÊÍ·ÅcJSON_Parse()·ÖÅä³öÀ´µÄÄÚ´æ¿Õ¼ä
-	
-	return 0;
+                    for(int i = 0; i < sub_array_size; i++)
+                    {
+                        if((sub_child_object = cJSON_GetArrayItem(subobject,i))!=NULL)
+                        {
+                            // åŒ¹é…æ—¥æœŸ
+                            if((child_Item = cJSON_GetObjectItem(sub_child_object,"date")) != NULL)
+                            {
+                                memcpy(result->date[i], child_Item->valuestring,strlen(child_Item->valuestring)); 		// ä¿å­˜æ•°æ®
+                            }
+                            // åŒ¹é…ç™½å¤©å¤©æ°”ç°è±¡æ–‡å­—
+                            if((child_Item = cJSON_GetObjectItem(sub_child_object,"text_day")) != NULL)
+                            {
+                                memcpy(result->text_day[i], child_Item->valuestring,strlen(child_Item->valuestring)); 	// ä¿å­˜æ•°æ®
+                            }
+                            // åŒ¹é…ç™½å¤©å¤©æ°”ç°è±¡ä»£ç 
+                            if((child_Item = cJSON_GetObjectItem(sub_child_object,"code_day")) != NULL)
+                            {
+                                memcpy(result->code_day[i], child_Item->valuestring,strlen(child_Item->valuestring)); 	// ä¿å­˜æ•°æ®
+                            }
+                            // åŒ¹é…å¤œé—´å¤©æ°”ç°è±¡ä»£ç 
+                            if((child_Item = cJSON_GetObjectItem(sub_child_object,"code_night")) != NULL)
+                            {
+                                memcpy(result->code_night[i], child_Item->valuestring,strlen(child_Item->valuestring)); // ä¿å­˜æ•°æ®
+                            }
+                            // åŒ¹é…æœ€é«˜æ¸©åº¦
+                            if((child_Item = cJSON_GetObjectItem(sub_child_object,"high")) != NULL)
+                            {
+                                memcpy(result->high[i], child_Item->valuestring,strlen(child_Item->valuestring)); 		//ä¿å­˜æ•°æ®
+                            }
+                            // åŒ¹é…æœ€ä½æ¸©åº¦
+                            if((child_Item = cJSON_GetObjectItem(sub_child_object,"low")) != NULL)
+                            {
+                                memcpy(result->low[i], child_Item->valuestring,strlen(child_Item->valuestring)); 		// ä¿å­˜æ•°æ®
+                            }
+                            // åŒ¹é…é£å‘
+                            if((child_Item = cJSON_GetObjectItem(sub_child_object,"wind_direction")) != NULL)
+                            {
+                                memcpy(result->wind_direction[i],child_Item->valuestring,strlen(child_Item->valuestring)); //ä¿å­˜æ•°æ®
+                            }
+                            // åŒ¹é…é£é€Ÿï¼Œå•ä½km/hï¼ˆå½“unit=cæ—¶ï¼‰
+                            if((child_Item = cJSON_GetObjectItem(sub_child_object,"wind_speed")) != NULL)
+                            {
+                                memcpy(result->wind_speed[i], child_Item->valuestring,strlen(child_Item->valuestring)); // ä¿å­˜æ•°æ®
+                            }
+                            // åŒ¹é…é£åŠ›ç­‰çº§
+                            if((child_Item = cJSON_GetObjectItem(sub_child_object,"wind_scale")) != NULL)
+                            {
+                                memcpy(result->wind_scale[i], child_Item->valuestring,strlen(child_Item->valuestring)); // ä¿å­˜æ•°æ®
+                            }
+                        }
+                    }
+                }
+                /* åŒ¹é…å­å¯¹è±¡3------æœ€åä¸€æ¬¡æ›´æ–°çš„æ—¶é—´ */
+                if((subobject = cJSON_GetObjectItem(object,"last_update")) != NULL)
+                {
+                    //printf("%s:%s\n",subobject->string,subobject->valuestring);
+                }
+            }
+        }
+    }
+
+    cJSON_Delete(json); //é‡Šæ”¾cJSON_Parse()åˆ†é…å‡ºæ¥çš„å†…å­˜ç©ºé—´
+
+    return 0;
 }
 
 /*******************************************************************************************************
-** º¯Êı: DisplayWeather£¬ÏÔÊ¾ÌìÆøÊı¾İ
+** å‡½æ•°: DisplayWeatherï¼Œæ˜¾ç¤ºå¤©æ°”æ•°æ®
 **------------------------------------------------------------------------------------------------------
-** ²ÎÊı: weather_data£ºÌìÆøÊı¾İ
-** ·µ»Ø: void
+** å‚æ•°: weather_dataï¼šå¤©æ°”æ•°æ®
+** è¿”å›: void
 ********************************************************************************************************/
 static void DisplayWeather(Weather *weather_data)
 {
-	printf("===========%s´ËÊ±µÄÌìÆøÇé¿öÈçÏÂ===========\n",weather_data->name);
-	printf("ÌìÆø£º%s\n",weather_data->text);		
-	printf("ÆøÎÂ£º%s¡æ\n",weather_data->temperature);	
-	printf("Ê±Çø£º%s\n",weather_data->timezone);	
-	printf("Ê±²î£º%s\n",weather_data->timezone_offset);
-	printf("ÌìÆø¸üĞÂÊ±¼ä£º%s\n",weather_data->last_update);
-	printf("===========%s½üÈıÌìµÄÌìÆøÇé¿öÈçÏÂ===========\n",weather_data->name);
-	printf("¡¾%s¡¿\n",weather_data->date[0]);
-	printf("ÌìÆø£º%s\n",weather_data->text_day[0]);
-	printf("×î¸ßÎÂ£º%s¡æ\n",weather_data->high[0]);
-	printf("×îµÍÎÂ£º%s¡æ\n",weather_data->low[0]);
-	printf("·çÏò£º%s\n",weather_data->wind_direction[0]);
-	printf("·çËÙ£º%skm/h\n",weather_data->wind_speed[0]);
-	printf("·çÁ¦µÈ¼¶£º%s\n",weather_data->wind_scale[0]);
-	printf("\n");
-	printf("¡¾%s¡¿\n",weather_data->date[1]);
-	printf("ÌìÆø£º%s\n",weather_data->text_day[1]);
-	printf("×î¸ßÎÂ£º%s¡æ\n",weather_data->high[1]);
-	printf("×îµÍÎÂ£º%s¡æ\n",weather_data->low[1]);
-	printf("·çÏò£º%s\n",weather_data->wind_direction[1]);
-	printf("·çËÙ£º%skm/h\n",weather_data->wind_speed[1]);
-	printf("·çÁ¦µÈ¼¶£º%s\n",weather_data->wind_scale[1]);
-	printf("\n");
-	printf("¡¾%s¡¿\n",weather_data->date[2]);
-	printf("ÌìÆø£º%s\n",weather_data->text_day[2]);
-	printf("×î¸ßÎÂ£º%s¡æ\n",weather_data->high[2]);
-	printf("×îµÍÎÂ£º%s¡æ\n",weather_data->low[2]);
-	printf("·çÏò£º%s\n",weather_data->wind_direction[2]);
-	printf("·çËÙ£º%skm/h\n",weather_data->wind_speed[2]);
-	printf("·çÁ¦µÈ¼¶£º%s\n",weather_data->wind_scale[2]);
+    printf("===========%sæ­¤æ—¶çš„å¤©æ°”æƒ…å†µå¦‚ä¸‹===========\n",weather_data->name);
+    printf("å¤©æ°”ï¼š%s\n",weather_data->text);
+    printf("æ°”æ¸©ï¼š%sâ„ƒ\n",weather_data->temperature);
+    printf("æ—¶åŒºï¼š%s\n",weather_data->timezone);
+    printf("æ—¶å·®ï¼š%s\n",weather_data->timezone_offset);
+    printf("å¤©æ°”æ›´æ–°æ—¶é—´ï¼š%s\n",weather_data->last_update);
+    printf("===========%sè¿‘ä¸‰å¤©çš„å¤©æ°”æƒ…å†µå¦‚ä¸‹===========\n",weather_data->name);
+    printf("ã€%sã€‘\n",weather_data->date[0]);
+    printf("å¤©æ°”ï¼š%s\n",weather_data->text_day[0]);
+    printf("æœ€é«˜æ¸©ï¼š%sâ„ƒ\n",weather_data->high[0]);
+    printf("æœ€ä½æ¸©ï¼š%sâ„ƒ\n",weather_data->low[0]);
+    printf("é£å‘ï¼š%s\n",weather_data->wind_direction[0]);
+    printf("é£é€Ÿï¼š%skm/h\n",weather_data->wind_speed[0]);
+    printf("é£åŠ›ç­‰çº§ï¼š%s\n",weather_data->wind_scale[0]);
+    printf("\n");
+    printf("ã€%sã€‘\n",weather_data->date[1]);
+    printf("å¤©æ°”ï¼š%s\n",weather_data->text_day[1]);
+    printf("æœ€é«˜æ¸©ï¼š%sâ„ƒ\n",weather_data->high[1]);
+    printf("æœ€ä½æ¸©ï¼š%sâ„ƒ\n",weather_data->low[1]);
+    printf("é£å‘ï¼š%s\n",weather_data->wind_direction[1]);
+    printf("é£é€Ÿï¼š%skm/h\n",weather_data->wind_speed[1]);
+    printf("é£åŠ›ç­‰çº§ï¼š%s\n",weather_data->wind_scale[1]);
+    printf("\n");
+    printf("ã€%sã€‘\n",weather_data->date[2]);
+    printf("å¤©æ°”ï¼š%s\n",weather_data->text_day[2]);
+    printf("æœ€é«˜æ¸©ï¼š%sâ„ƒ\n",weather_data->high[2]);
+    printf("æœ€ä½æ¸©ï¼š%sâ„ƒ\n",weather_data->low[2]);
+    printf("é£å‘ï¼š%s\n",weather_data->wind_direction[2]);
+    printf("é£é€Ÿï¼š%skm/h\n",weather_data->wind_speed[2]);
+    printf("é£åŠ›ç­‰çº§ï¼š%s\n",weather_data->wind_scale[2]);
 }
 
 /*******************************************************************************************************
-** º¯Êı: cmd_window_set£¬ÉèÖÃcmd´°¿Ú
+** å‡½æ•°: cmd_window_setï¼Œè®¾ç½®cmdçª—å£
 **------------------------------------------------------------------------------------------------------
-** ²ÎÊı: weather_data£ºÌìÆøÊı¾İ
-** ·µ»Ø: void
+** å‚æ•°: weather_dataï¼šå¤©æ°”æ•°æ®
+** è¿”å›: void
 ********************************************************************************************************/
 static void cmd_window_set(struct cmd_windows_config *config)
 {
-	char cmd[50];
-	
-	// ÉèÖÃcmd´°¿Ú±êÌâ
-	system("title ÕıÄî¾ı"); 
-	// ÉèÖÃcmd´°¿Ú¿í¡¢¸ß
-	sprintf((char*)cmd, "mode con cols=%d lines=%d", 
-			config->width, config->high);
-	system(cmd);
-	memset(cmd, 0, 50);
-	// ÉèÖÃcmd´°¿Ú±³¾°É«
-	sprintf((char*)cmd, "color %x", config->color);
-    system(cmd);  	
-	memset(cmd, 0, 50);				
+    char cmd[50];
+
+    // è®¾ç½®cmdçª—å£æ ‡é¢˜
+    system("title æ­£å¿µå›");
+    // è®¾ç½®cmdçª—å£å®½ã€é«˜
+    sprintf((char*)cmd, "mode con cols=%d lines=%d",
+            config->width, config->high);
+    system(cmd);
+    memset(cmd, 0, 50);
+    // è®¾ç½®cmdçª—å£èƒŒæ™¯è‰²
+    sprintf((char*)cmd, "color %x", config->color);
+    system(cmd);
+    memset(cmd, 0, 50);
 }
 
 /*******************************************************************************************************
-** º¯Êı: printf_topic, ´òÓ¡±êÌâ
+** å‡½æ•°: printf_topic, æ‰“å°æ ‡é¢˜
 **------------------------------------------------------------------------------------------------------
-** ²ÎÊı: void
-** ·µ»Ø: void
+** å‚æ•°: void
+** è¿”å›: void
 ********************************************************************************************************/
 static void printf_topic(void)
 {
-    system("date /T");	// Êä³öÈÕÆÚ
-    system("time /T");	// Êä³öÊ±¼ä	
-	
-	printf("=================HTTPÌìÆø¿Í»§¶Ë==================\n");
-	printf("ÇëÊäÈëÒª²éÑ¯ÌìÆøµÄ³ÇÊĞÃû³ÆµÄÆ´Òô£¨Èç£ºbeijing£©£º");
+    system("date /T");	// è¾“å‡ºæ—¥æœŸ
+    system("time /T");	// è¾“å‡ºæ—¶é—´
+
+    printf("=================HTTPå¤©æ°”å®¢æˆ·ç«¯==================\n");
+    printf("è¯·è¾“å…¥è¦æŸ¥è¯¢å¤©æ°”çš„åŸå¸‚åç§°çš„æ‹¼éŸ³ï¼ˆå¦‚ï¼šbeijingï¼‰ï¼š");
 }
