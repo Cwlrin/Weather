@@ -130,17 +130,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named untitled
+# Target rules for targets named Weather
 
 # Build rule for target.
-untitled: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 untitled
-.PHONY : untitled
+Weather: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 Weather
+.PHONY : Weather
 
 # fast build rule for target.
-untitled/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\untitled.dir\build.make CMakeFiles/untitled.dir/build
-.PHONY : untitled/fast
+Weather/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Weather.dir\build.make CMakeFiles/Weather.dir/build
+.PHONY : Weather/fast
 
 cJSON.obj: cJSON.c.obj
 
@@ -148,7 +148,7 @@ cJSON.obj: cJSON.c.obj
 
 # target to build an object file
 cJSON.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\untitled.dir\build.make CMakeFiles/untitled.dir/cJSON.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Weather.dir\build.make CMakeFiles/Weather.dir/cJSON.c.obj
 .PHONY : cJSON.c.obj
 
 cJSON.i: cJSON.c.i
@@ -157,7 +157,7 @@ cJSON.i: cJSON.c.i
 
 # target to preprocess a source file
 cJSON.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\untitled.dir\build.make CMakeFiles/untitled.dir/cJSON.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Weather.dir\build.make CMakeFiles/Weather.dir/cJSON.c.i
 .PHONY : cJSON.c.i
 
 cJSON.s: cJSON.c.s
@@ -166,35 +166,35 @@ cJSON.s: cJSON.c.s
 
 # target to generate assembly for a file
 cJSON.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\untitled.dir\build.make CMakeFiles/untitled.dir/cJSON.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Weather.dir\build.make CMakeFiles/Weather.dir/cJSON.c.s
 .PHONY : cJSON.c.s
 
-main.obj: main.c.obj
+main.obj: main.cpp.obj
 
 .PHONY : main.obj
 
 # target to build an object file
-main.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\untitled.dir\build.make CMakeFiles/untitled.dir/main.c.obj
-.PHONY : main.c.obj
+main.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Weather.dir\build.make CMakeFiles/Weather.dir/main.cpp.obj
+.PHONY : main.cpp.obj
 
-main.i: main.c.i
+main.i: main.cpp.i
 
 .PHONY : main.i
 
 # target to preprocess a source file
-main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\untitled.dir\build.make CMakeFiles/untitled.dir/main.c.i
-.PHONY : main.c.i
+main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Weather.dir\build.make CMakeFiles/Weather.dir/main.cpp.i
+.PHONY : main.cpp.i
 
-main.s: main.c.s
+main.s: main.cpp.s
 
 .PHONY : main.s
 
 # target to generate assembly for a file
-main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\untitled.dir\build.make CMakeFiles/untitled.dir/main.c.s
-.PHONY : main.c.s
+main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Weather.dir\build.make CMakeFiles/Weather.dir/main.cpp.s
+.PHONY : main.cpp.s
 
 utf8togbk.obj: utf8togbk.c.obj
 
@@ -202,7 +202,7 @@ utf8togbk.obj: utf8togbk.c.obj
 
 # target to build an object file
 utf8togbk.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\untitled.dir\build.make CMakeFiles/untitled.dir/utf8togbk.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Weather.dir\build.make CMakeFiles/Weather.dir/utf8togbk.c.obj
 .PHONY : utf8togbk.c.obj
 
 utf8togbk.i: utf8togbk.c.i
@@ -211,7 +211,7 @@ utf8togbk.i: utf8togbk.c.i
 
 # target to preprocess a source file
 utf8togbk.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\untitled.dir\build.make CMakeFiles/untitled.dir/utf8togbk.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Weather.dir\build.make CMakeFiles/Weather.dir/utf8togbk.c.i
 .PHONY : utf8togbk.c.i
 
 utf8togbk.s: utf8togbk.c.s
@@ -220,7 +220,7 @@ utf8togbk.s: utf8togbk.c.s
 
 # target to generate assembly for a file
 utf8togbk.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\untitled.dir\build.make CMakeFiles/untitled.dir/utf8togbk.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Weather.dir\build.make CMakeFiles/Weather.dir/utf8togbk.c.s
 .PHONY : utf8togbk.c.s
 
 # Help Target
@@ -231,7 +231,7 @@ help:
 	@echo ... depend
 	@echo ... edit_cache
 	@echo ... rebuild_cache
-	@echo ... untitled
+	@echo ... Weather
 	@echo ... cJSON.obj
 	@echo ... cJSON.i
 	@echo ... cJSON.s

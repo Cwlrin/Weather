@@ -1,6 +1,5 @@
 file(REMOVE_RECURSE
   "CMakeFiles/untitled.dir/cJSON.c.obj"
-  "CMakeFiles/untitled.dir/main.c.obj"
   "CMakeFiles/untitled.dir/utf8togbk.c.obj"
   "libuntitled.dll.a"
   "untitled.exe"

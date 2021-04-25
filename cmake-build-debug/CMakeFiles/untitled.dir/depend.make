@@ -4,8 +4,6 @@
 CMakeFiles/untitled.dir/cJSON.c.obj: ../cJSON.c
 CMakeFiles/untitled.dir/cJSON.c.obj: ../cJSON.h
 
-CMakeFiles/untitled.dir/main.c.obj: ../main.c
-
 CMakeFiles/untitled.dir/utf8togbk.c.obj: ../utf8togbk.c
 CMakeFiles/untitled.dir/utf8togbk.c.obj: ../utf8togbk.h
 

@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.17)
-project(untitled C)
+project(Weather)
 
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
-add_executable(untitled main.c cJSON.c cJSON.h utf8togbk.c utf8togbk.h)
+add_executable(Weather cJSON.c cJSON.h main.cpp utf8togbk.c utf8togbk.h)
+
+target_link_libraries(Weather C:/MinGW/lib/libwsock32.a)

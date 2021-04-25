@@ -72,7 +72,7 @@ CMAKE_BINARY_DIR = C:\Users\20304\Documents\Weather\cmake-build-debug
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/untitled.dir/all
+all: CMakeFiles/Weather.dir/all
 
 .PHONY : all
 
@@ -82,36 +82,36 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/untitled.dir/clean
+clean: CMakeFiles/Weather.dir/clean
 
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/untitled.dir
+# Target rules for target CMakeFiles/Weather.dir
 
 # All Build rule for target.
-CMakeFiles/untitled.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\untitled.dir\build.make CMakeFiles/untitled.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\untitled.dir\build.make CMakeFiles/untitled.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=C:\Users\20304\Documents\Weather\cmake-build-debug\CMakeFiles --progress-num=1,2,3,4 "Built target untitled"
-.PHONY : CMakeFiles/untitled.dir/all
+CMakeFiles/Weather.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Weather.dir\build.make CMakeFiles/Weather.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Weather.dir\build.make CMakeFiles/Weather.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=C:\Users\20304\Documents\Weather\cmake-build-debug\CMakeFiles --progress-num=1,2,3,4 "Built target Weather"
+.PHONY : CMakeFiles/Weather.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/untitled.dir/rule: cmake_check_build_system
+CMakeFiles/Weather.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\20304\Documents\Weather\cmake-build-debug\CMakeFiles 4
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/untitled.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/Weather.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\20304\Documents\Weather\cmake-build-debug\CMakeFiles 0
-.PHONY : CMakeFiles/untitled.dir/rule
+.PHONY : CMakeFiles/Weather.dir/rule
 
 # Convenience name for target.
-untitled: CMakeFiles/untitled.dir/rule
+Weather: CMakeFiles/Weather.dir/rule
 
-.PHONY : untitled
+.PHONY : Weather
 
 # clean rule for target.
-CMakeFiles/untitled.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\untitled.dir\build.make CMakeFiles/untitled.dir/clean
-.PHONY : CMakeFiles/untitled.dir/clean
+CMakeFiles/Weather.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Weather.dir\build.make CMakeFiles/Weather.dir/clean
+.PHONY : CMakeFiles/Weather.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
