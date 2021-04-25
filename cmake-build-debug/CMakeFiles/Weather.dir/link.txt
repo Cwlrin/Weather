@@ -1,0 +1,1 @@
+C:\MinGW\bin\g++.exe -g   -Wl,@CMakeFiles\Weather.dir\objects1.rsp  -o Weather.exe -Wl,--out-implib,libWeather.dll.a -Wl,--major-image-version,0,--minor-image-version,0  C:\MinGW\lib\libwsock32.a -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 

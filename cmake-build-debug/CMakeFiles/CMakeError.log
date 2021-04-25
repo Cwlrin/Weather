@@ -1,0 +1,14 @@
+Determining if the include file pthread.h exists failed with the following output:
+Change Dir: C:/Users/20304/Documents/Weather/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/MinGW/bin/mingw32-make.exe cmTC_9b3c0/fast && C:/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_9b3c0.dir\build.make CMakeFiles/cmTC_9b3c0.dir/build
+mingw32-make.exe[1]: Entering directory `C:/Users/20304/Documents/Weather/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9b3c0.dir/CheckIncludeFile.c.obj
+C:\MinGW\bin\gcc.exe    -o CMakeFiles\cmTC_9b3c0.dir\CheckIncludeFile.c.obj   -c C:\Users\20304\Documents\Weather\cmake-build-debug\CMakeFiles\CMakeTmp\CheckIncludeFile.c
+C:\Users\20304\Documents\Weather\cmake-build-debug\CMakeFiles\CMakeTmp\CheckIncludeFile.c:1:21: pthread.h: No such file or directory
+mingw32-make.exe[1]: *** [CMakeFiles/cmTC_9b3c0.dir/CheckIncludeFile.c.obj] Error 1
+mingw32-make.exe[1]: Leaving directory `C:/Users/20304/Documents/Weather/cmake-build-debug/CMakeFiles/CMakeTmp'
+mingw32-make.exe: *** [cmTC_9b3c0/fast] Error 2
+
+
+
